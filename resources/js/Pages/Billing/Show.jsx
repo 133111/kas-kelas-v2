@@ -248,8 +248,8 @@ export default function Show({ session, payments, debts }) {
                                                                 disabled={session.status === 'closed' || processing}
                                                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 ${
                                                                     payment.status === 'paid'
-                                                                        ? 'bg-emerald-500 text-dark-bg font-extrabold shadow-md shadow-emerald-500/10'
-                                                                        : 'bg-dark-surface hover:bg-emerald-500/15 text-emerald-400 hover:text-emerald-300 border border-dark-border/40 hover:border-emerald-500/30'
+                                                                        ? 'bg-emerald-600 text-white font-extrabold shadow-md shadow-emerald-500/10'
+                                                                        : 'bg-dark-surface hover:bg-emerald-500/15 text-emerald-600 hover:text-emerald-700 border border-dark-border/40 hover:border-emerald-500/30'
                                                                 } disabled:opacity-50 disabled:scale-100`}
                                                             >
                                                                 Bayar
@@ -261,8 +261,8 @@ export default function Show({ session, payments, debts }) {
                                                                 disabled={session.status === 'closed' || processing}
                                                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 ${
                                                                     payment.status === 'unpaid'
-                                                                        ? 'bg-amber-500 text-dark-bg font-extrabold shadow-md shadow-amber-500/10'
-                                                                        : 'bg-dark-surface hover:bg-amber-500/15 text-amber-400 hover:text-amber-300 border border-dark-border/40 hover:border-amber-500/30'
+                                                                        ? 'bg-amber-500 text-slate-900 font-extrabold shadow-md shadow-amber-500/10'
+                                                                        : 'bg-dark-surface hover:bg-amber-500/15 text-amber-600 hover:text-amber-700 border border-dark-border/40 hover:border-amber-500/30'
                                                                 } disabled:opacity-50 disabled:scale-100`}
                                                             >
                                                                 Belum
@@ -274,8 +274,8 @@ export default function Show({ session, payments, debts }) {
                                                                 disabled={session.status === 'closed' || processing}
                                                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 ${
                                                                     payment.status === 'absent'
-                                                                        ? 'bg-rose-500 text-white font-extrabold shadow-md shadow-rose-500/10'
-                                                                        : 'bg-dark-surface hover:bg-rose-500/15 text-rose-400 hover:text-rose-300 border border-dark-border/40 hover:border-rose-500/30'
+                                                                        ? 'bg-rose-600 text-white font-extrabold shadow-md shadow-rose-500/10'
+                                                                        : 'bg-dark-surface hover:bg-rose-500/15 text-rose-600 hover:text-rose-700 border border-dark-border/40 hover:border-rose-500/30'
                                                                 } disabled:opacity-50 disabled:scale-100`}
                                                                 title="Tandai absen, hutang 2x lipat"
                                                             >

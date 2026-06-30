@@ -56,33 +56,33 @@ export default function Dashboard({ stats, monthlyData, recentSessions, recentTr
             title: 'Saldo Kas Kelas',
             value: stats.balance,
             icon: Wallet,
-            color: 'from-emerald-500/20 to-teal-500/10 border-emerald-500/20 text-emerald-400',
+            color: 'from-emerald-100/90 to-emerald-50/70 border-emerald-300 text-emerald-800',
             subtitle: 'Total dana kas saat ini',
-            glow: 'rgba(16, 185, 129, 0.15)'
+            glow: 'rgba(16, 185, 129, 0.05)'
         },
         {
             title: 'Hutang / Tunggakan',
             value: stats.active_debts,
             icon: AlertCircle,
-            color: 'from-rose-500/20 to-red-500/10 border-rose-500/20 text-rose-400',
+            color: 'from-rose-100/90 to-rose-50/70 border-rose-300 text-rose-800',
             subtitle: 'Dana belum tertagih',
-            glow: 'rgba(239, 68, 68, 0.15)'
+            glow: 'rgba(239, 68, 68, 0.05)'
         },
         {
             title: 'Pemasukan Bulan Ini',
             value: stats.current_month_income,
             icon: TrendingUp,
-            color: 'from-indigo-500/20 to-blue-500/10 border-indigo-500/20 text-indigo-400',
+            color: 'from-indigo-100/90 to-indigo-50/70 border-indigo-300 text-indigo-800',
             subtitle: 'Bulan ini',
-            glow: 'rgba(99, 102, 241, 0.15)'
+            glow: 'rgba(99, 102, 241, 0.05)'
         },
         {
             title: 'Pengeluaran Bulan Ini',
             value: stats.current_month_expense,
             icon: TrendingDown,
-            color: 'from-amber-500/20 to-orange-500/10 border-amber-500/20 text-amber-400',
+            color: 'from-amber-100/90 to-amber-50/70 border-amber-300 text-amber-800',
             subtitle: 'Bulan ini',
-            glow: 'rgba(245, 158, 11, 0.15)'
+            glow: 'rgba(245, 158, 11, 0.05)'
         }
     ];
 
@@ -119,21 +119,21 @@ export default function Dashboard({ stats, monthlyData, recentSessions, recentTr
                                 key={i}
                                 variants={itemVariants}
                                 whileHover={{ y: -4, shadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)' }}
-                                className={`p-6 rounded-2xl bg-dark-card border bg-gradient-to-tr ${card.color} flex flex-col justify-between h-40 relative overflow-hidden group transition-all duration-300`}
+                                className={`p-6 rounded-2xl border-2 bg-gradient-to-tr ${card.color} flex flex-col justify-between h-40 relative overflow-hidden group transition-all duration-300`}
                                 style={{ boxShadow: `0 10px 15px -3px ${card.glow}` }}
                             >
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{card.title}</p>
-                                        <h3 className="text-2xl font-extrabold text-white mt-2 tracking-tight">
+                                        <p className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{card.title}</p>
+                                        <h3 className="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">
                                             {formatIDR(card.value)}
                                         </h3>
                                     </div>
-                                    <div className="p-3 rounded-xl bg-dark-surface/80 border border-dark-border/40 group-hover:scale-110 transition-transform">
+                                    <div className="p-3 rounded-xl bg-white border border-white/50 shadow-sm group-hover:scale-110 transition-transform text-slate-800">
                                         <Icon className="w-5 h-5" />
                                     </div>
                                 </div>
-                                <div className="text-xs font-medium text-gray-500 mt-2">
+                                <div className="text-xs font-semibold opacity-80 mt-2">
                                     {card.subtitle}
                                 </div>
                             </motion.div>
@@ -251,7 +251,7 @@ export default function Dashboard({ stats, monthlyData, recentSessions, recentTr
                             <Users className="w-5 h-5 text-accent-teal shrink-0" />
                             <div className="min-w-0">
                                 <p className="text-xs font-semibold text-gray-400">Total Siswa Terdaftar</p>
-                                <p className="text-sm font-extrabold text-white mt-0.5">{stats.total_students} Siswa Aktif</p>
+                                <p className="text-sm font-extrabold text-slate-800 mt-0.5">{stats.total_students} Siswa Aktif</p>
                             </div>
                         </div>
                     </motion.div>
@@ -359,7 +359,7 @@ export default function Dashboard({ stats, monthlyData, recentSessions, recentTr
                                                 {tx.type === 'income' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="text-sm font-semibold text-gray-200 truncate group-hover:text-white transition-colors">{tx.description}</p>
+                                                <p className="text-sm font-semibold text-gray-200 truncate group-hover:text-slate-900 transition-colors">{tx.description}</p>
                                                 <div className="flex items-center gap-2 text-[10px] text-gray-500 mt-0.5">
                                                     <span className="capitalize font-semibold">{tx.category.replace('_', ' ')}</span>
                                                     <span>•</span>

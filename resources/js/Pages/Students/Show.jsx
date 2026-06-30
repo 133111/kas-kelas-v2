@@ -13,7 +13,8 @@ import {
     User,
     TrendingUp,
     Check,
-    Clock
+    Clock,
+    Pencil
 } from 'lucide-react';
 
 export default function Show({ student, paymentHistory, chartData, debts }) {
@@ -66,14 +67,23 @@ export default function Show({ student, paymentHistory, chartData, debts }) {
             <Head title={`Profil Siswa - ${student.name}`} />
 
             <div className="space-y-8">
-                {/* Back Link */}
-                <Link
-                    href="/students"
-                    className="inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-white transition-colors"
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    Kembali ke Daftar Siswa
-                </Link>
+                {/* Header Action */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <Link
+                        href="/students"
+                        className="inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-white transition-colors"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Kembali ke Daftar Siswa
+                    </Link>
+                    <Link
+                        href={`/students/${student.id}/edit`}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 hover:text-emerald-800 border border-emerald-200 font-bold text-xs shadow-sm transition-all active:scale-95 cursor-pointer"
+                    >
+                        <Pencil className="w-3.5 h-3.5 text-emerald-600" />
+                        Edit Data Siswa
+                    </Link>
+                </div>
 
                 {/* Profile Banner */}
                 <div className="p-6 rounded-2xl bg-dark-card border border-dark-border/60 shadow-xl relative overflow-hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
@@ -83,12 +93,11 @@ export default function Show({ student, paymentHistory, chartData, debts }) {
                         </div>
                         <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                                <h2 className="text-xl font-extrabold text-white">{student.name}</h2>
+                                <h2 className="text-xl font-extrabold text-slate-800">{student.name}</h2>
                                 <span className="px-2 py-0.5 rounded-lg bg-dark-surface border border-dark-border text-xs text-gray-400 font-bold">
                                     Absen {student.nomor_absen}
                                 </span>
                             </div>
-                            <p className="text-xs text-gray-500 font-medium">NIS: <span className="font-mono text-gray-300">{student.nis}</span></p>
                         </div>
                     </div>
 

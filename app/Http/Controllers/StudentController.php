@@ -15,10 +15,7 @@ class StudentController extends Controller
         $query = Student::where('is_active', true);
 
         if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('nis', 'like', "%{$request->search}%");
-            });
+            $query->where('name', 'like', "%{$request->search}%");
         }
 
         $students = $query->orderBy('nomor_absen')
@@ -32,7 +29,6 @@ class StudentController extends Controller
                 return [
                     'id' => $student->id,
                     'name' => $student->name,
-                    'nis' => $student->nis,
                     'nomor_absen' => $student->nomor_absen,
                     'payment_rate' => $totalSessions > 0 ? round(($paidCount / $totalSessions) * 100, 1) : 0,
                     'paid_count' => $paidCount,
@@ -100,7 +96,6 @@ class StudentController extends Controller
             'student' => [
                 'id' => $student->id,
                 'name' => $student->name,
-                'nis' => $student->nis,
                 'nomor_absen' => $student->nomor_absen,
                 'payment_rate' => $totalSessions > 0 ? round(($paidCount / $totalSessions) * 100, 1) : 0,
                 'paid_count' => $paidCount,
@@ -113,4 +108,32 @@ class StudentController extends Controller
             'debts' => $debts,
         ]);
     }
+
+    public function edit($id)
+    {
+        $student = Student::findOrFail($id);
+
+        return Inertia::render('Students/Edit', [
+            'student' => [
+                'id' => $student->id,
+                'name' => $student->name,
+                'nomor_absen' => $student->nomor_absen,
+            ]
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $student = Student::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'nomor_absen' => ['required', 'integer', 'min:1', 'max:100'],
+        ]);
+
+        $student->update($validated);
+
+        return redirect()->route('students.index')->with('success', 'Data siswa ' . $student->name . ' berhasil diperbarui.');
+    }
 }
+

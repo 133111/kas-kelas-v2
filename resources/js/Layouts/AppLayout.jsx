@@ -16,7 +16,8 @@ import {
     ChevronDown,
     Bell,
     CheckCircle,
-    XCircle
+    XCircle,
+    Smartphone
 } from 'lucide-react';
 
 export default function AppLayout({ children, header }) {
@@ -46,6 +47,7 @@ export default function AppLayout({ children, header }) {
         { name: 'Daftar Siswa', icon: Users, href: '/students', active: currentRoute.startsWith('/students') },
         { name: 'Tunggakan / Hutang', icon: AlertTriangle, href: '/debts', active: currentRoute.startsWith('/debts') },
         { name: 'Laporan', icon: BarChart3, href: '/reports', active: currentRoute.startsWith('/reports') },
+        { name: 'Simulator HP', icon: Smartphone, href: '/simulator', active: currentRoute.startsWith('/simulator') },
     ];
 
     return (
@@ -81,8 +83,8 @@ export default function AppLayout({ children, header }) {
                         KK
                     </div>
                     <div>
-                        <h1 className="font-bold text-base bg-gradient-to-r from-teal-300 to-indigo-300 bg-clip-text text-transparent">Kas Kelas</h1>
-                        <span className="text-[10px] text-gray-500 font-semibold tracking-wider uppercase">Management System</span>
+                        <h1 className="font-bold text-base bg-gradient-to-r from-accent-teal to-accent-indigo bg-clip-text text-transparent">Kas Kelas</h1>
+                        <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase">Management</span>
                     </div>
                 </div>
 
@@ -94,13 +96,13 @@ export default function AppLayout({ children, header }) {
                             <Link
                                 key={index}
                                 href={item.href}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group ${
+                                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 group ${
                                     item.active 
-                                        ? 'bg-gradient-to-r from-accent-teal/20 to-accent-indigo/10 text-accent-teal border border-accent-teal/20 shadow-sm shadow-accent-teal/5' 
-                                        : 'text-gray-400 hover:text-gray-200 hover:bg-dark-surface/50 border border-transparent'
+                                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100/80 shadow-sm shadow-emerald-100/10' 
+                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
                                 }`}
                             >
-                                <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${item.active ? 'text-accent-teal' : 'text-gray-400 group-hover:text-gray-200'}`} />
+                                <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${item.active ? 'text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
                                 {item.name}
                             </Link>
                         );
@@ -158,10 +160,10 @@ export default function AppLayout({ children, header }) {
                                             key={index}
                                             href={item.href}
                                             onClick={() => setSidebarOpen(false)}
-                                            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+                                            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
                                                 item.active 
-                                                    ? 'bg-gradient-to-r from-accent-teal/20 to-accent-indigo/10 text-accent-teal border border-accent-teal/20' 
-                                                    : 'text-gray-400 hover:text-gray-200 hover:bg-dark-surface/50 border border-transparent'
+                                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
+                                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
                                             }`}
                                         >
                                             <Icon className="w-5 h-5" />
@@ -244,9 +246,9 @@ export default function AppLayout({ children, header }) {
                                             href="/logout"
                                             method="post"
                                             as="button"
-                                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all text-left"
+                                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-all text-left font-semibold"
                                         >
-                                            <LogOut className="w-4 h-4" />
+                                            <LogOut className="w-4 h-4 text-rose-500" />
                                             Keluar Sesi
                                         </Link>
                                     </motion.div>

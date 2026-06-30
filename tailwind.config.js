@@ -17,14 +17,26 @@ export default {
             },
             colors: {
                 dark: {
-                    bg: '#0f1117',
-                    card: '#1a1d29',
-                    surface: '#252836',
-                    border: '#2e3348',
+                    bg: '#f8fafc',
+                    card: '#ffffff',
+                    surface: '#f1f5f9',
+                    border: '#e2e8f0',
                 },
                 accent: {
-                    teal: '#2dd4bf',
-                    indigo: '#818cf8',
+                    teal: '#0d9488',
+                    indigo: '#4f46e5',
+                },
+                gray: {
+                    50: '#0f172a',
+                    100: '#1e293b',
+                    200: '#334155',
+                    300: '#475569',
+                    400: '#64748b',
+                    500: '#94a3b8',
+                    600: '#cbd5e1',
+                    700: '#e2e8f0',
+                    800: '#f1f5f9',
+                    900: '#f8fafc',
                 }
             }
         },

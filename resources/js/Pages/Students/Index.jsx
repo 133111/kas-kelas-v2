@@ -11,7 +11,8 @@ import {
     Sparkles, 
     TrendingUp, 
     ChevronRight,
-    Users
+    Users,
+    Pencil
 } from 'lucide-react';
 
 export default function Index({ students, filters }) {
@@ -101,7 +102,7 @@ export default function Index({ students, filters }) {
                                 type="text"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                placeholder="Cari nama siswa atau NIS..."
+                                placeholder="Cari nama siswa..."
                                 className="w-full bg-dark-bg/60 border border-dark-border/40 focus:border-accent-teal focus:ring-1 focus:ring-accent-teal/30 rounded-xl pl-10 pr-4 py-2 text-xs text-gray-300 placeholder-gray-500 transition-all"
                             />
                         </div>
@@ -116,7 +117,6 @@ export default function Index({ students, filters }) {
                                 <tr className="border-b border-dark-border/60 text-[11px] font-bold text-gray-400 uppercase tracking-wider bg-dark-surface/30">
                                     <th className="py-4 px-6 text-center w-20">No Absen</th>
                                     <th className="py-4 px-4">Nama Siswa</th>
-                                    <th className="py-4 px-4 w-32">NIS</th>
                                     <th className="py-4 px-4 text-center w-40">Kerajinan Bayar</th>
                                     <th className="py-4 px-4 text-right w-44">Tunggakan Aktif</th>
                                     <th className="py-4 px-6 text-center w-28">Aksi</th>
@@ -125,7 +125,7 @@ export default function Index({ students, filters }) {
                             <tbody className="divide-y divide-dark-border/30 text-sm font-medium text-gray-300">
                                 {students.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="py-12 text-center text-gray-500 font-semibold">
+                                        <td colSpan="5" className="py-12 text-center text-gray-500 font-semibold">
                                             Siswa tidak ditemukan.
                                         </td>
                                     </tr>
@@ -137,9 +137,6 @@ export default function Index({ students, filters }) {
                                             </td>
                                             <td className="py-4 px-4 font-bold text-gray-200">
                                                 {student.name}
-                                            </td>
-                                            <td className="py-4 px-4 text-xs font-mono text-gray-500">
-                                                {student.nis}
                                             </td>
                                             <td className="py-4 px-4 text-center">
                                                 <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${getStatusColor(student.payment_rate)}`}>
@@ -153,13 +150,22 @@ export default function Index({ students, filters }) {
                                                 {student.total_debt > 0 ? formatIDR(student.total_debt) : 'Lunas'}
                                             </td>
                                             <td className="py-4 px-6 text-center">
-                                                <Link
-                                                    href={`/students/${student.id}`}
-                                                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-dark-surface hover:bg-dark-surface/80 border border-dark-border text-xs font-bold text-gray-300 hover:text-white transition-all active:scale-95"
-                                                >
-                                                    Detail
-                                                    <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                                                </Link>
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <Link
+                                                        href={`/students/${student.id}`}
+                                                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-dark-surface hover:bg-dark-surface/80 border border-dark-border text-xs font-bold text-gray-300 hover:text-white transition-all active:scale-95"
+                                                    >
+                                                        Detail
+                                                        <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                                                    </Link>
+                                                    <Link
+                                                        href={`/students/${student.id}/edit`}
+                                                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 hover:text-emerald-850 border border-emerald-200 text-xs font-bold transition-all active:scale-95 cursor-pointer"
+                                                    >
+                                                        <Pencil className="w-3 h-3 text-emerald-600" />
+                                                        Edit
+                                                    </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

@@ -121,7 +121,7 @@ export default function Index({ sessions }) {
                                         {/* Financial details */}
                                         <div className="mt-4 space-y-1">
                                             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Terkumpul</p>
-                                            <h3 className="text-xl font-black text-white">{formatIDR(session.total_collected)}</h3>
+                                            <h3 className="text-xl font-black text-slate-800">{formatIDR(session.total_collected)}</h3>
                                             <p className="text-[11px] text-gray-500">
                                                 Nominal per siswa: <span className="font-semibold text-gray-400">{formatIDR(session.amount_per_student)}</span>
                                             </p>

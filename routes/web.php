@@ -15,7 +15,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Billing
@@ -35,6 +35,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+
+    // Simulator Mobile Screen
+    Route::get('/simulator', function () {
+        return Inertia::render('Simulator');
+    })->name('simulator');
 });
 
 Route::middleware('auth')->group(function () {
