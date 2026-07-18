@@ -46,73 +46,141 @@ export default function AppLayout({ children, header }) {
         { name: 'Transaksi Kas', icon: Coins, href: '/transactions', active: currentRoute.startsWith('/transactions') },
         { name: 'Daftar Siswa', icon: Users, href: '/students', active: currentRoute.startsWith('/students') },
         { name: 'Tunggakan / Hutang', icon: AlertTriangle, href: '/debts', active: currentRoute.startsWith('/debts') },
-        { name: 'Laporan', icon: BarChart3, href: '/reports', active: currentRoute.startsWith('/reports') },
-        { name: 'Simulator HP', icon: Smartphone, href: '/simulator', active: currentRoute.startsWith('/simulator') },
+        { name: 'Laporan', icon: BarChart3, href: '/reports', active: currentRoute.startsWith('/reports') }
     ];
+
+    // Page transition variants
+    const pageVariants = {
+        initial: { opacity: 0, y: 12 },
+        animate: { 
+            opacity: 1, y: 0,
+            transition: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }
+        },
+        exit: { 
+            opacity: 0, y: -8,
+            transition: { duration: 0.2 }
+        }
+    };
+
+    // Nav item animation stagger
+    const navContainerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.04, delayChildren: 0.1 }
+        }
+    };
+
+    const navItemVariants = {
+        hidden: { opacity: 0, x: -12 },
+        show: { 
+            opacity: 1, x: 0,
+            transition: { type: 'spring', stiffness: 120, damping: 14 }
+        }
+    };
 
     return (
         <div className="min-h-screen bg-dark-bg text-gray-100 flex font-sans antialiased">
-            {/* Toast Notification */}
+            {/* Toast Notification — Enhanced with spring bounce */}
             <AnimatePresence>
                 {toast && (
                     <motion.div
-                        initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -20, scale: 0.9 }}
+                        initial={{ opacity: 0, y: -30, scale: 0.85, x: 20 }}
+                        animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
+                        exit={{ opacity: 0, y: -20, scale: 0.9, x: 20 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
                         className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg backdrop-blur-md bg-dark-surface/90"
                         style={{ borderColor: toast.type === 'success' ? '#10b981' : '#ef4444' }}
                     >
                         {toast.type === 'success' ? (
-                            <CheckCircle className="w-5 h-5 text-emerald-400" />
+                            <motion.div
+                                initial={{ scale: 0, rotate: -90 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.1 }}
+                            >
+                                <CheckCircle className="w-5 h-5 text-emerald-400" />
+                            </motion.div>
                         ) : (
-                            <XCircle className="w-5 h-5 text-red-500" />
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.1 }}
+                            >
+                                <XCircle className="w-5 h-5 text-red-500" />
+                            </motion.div>
                         )}
                         <span className="text-sm font-medium">{toast.message}</span>
-                        <button onClick={() => setToast(null)} className="ml-2 hover:opacity-70 text-gray-400">
+                        <button onClick={() => setToast(null)} className="ml-2 hover:opacity-70 text-gray-400 hover:rotate-90 transition-transform duration-300">
                             <X className="w-4 h-4" />
                         </button>
+                        {/* Toast progress bar */}
+                        <motion.div 
+                            initial={{ scaleX: 1 }}
+                            animate={{ scaleX: 0 }}
+                            transition={{ duration: 4, ease: 'linear' }}
+                            className="absolute bottom-0 left-0 right-0 h-0.5 rounded-b-xl origin-left"
+                            style={{ backgroundColor: toast.type === 'success' ? '#10b981' : '#ef4444' }}
+                        />
                     </motion.div>
                 )}
             </AnimatePresence>
 
             {/* Sidebar (Desktop) */}
             <aside className="hidden lg:flex flex-col w-64 bg-dark-card border-r border-dark-border/60 shrink-0">
-                {/* Brand Logo */}
+                {/* Brand Logo — with hover animation */}
                 <div className="h-16 flex items-center gap-3 px-6 border-b border-dark-border/40">
-                    <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-accent-teal to-accent-indigo flex items-center justify-center font-bold text-white shadow-md shadow-accent-teal/20">
+                    <motion.div 
+                        whileHover={{ rotate: [0, -5, 5, 0], scale: 1.08 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-9 h-9 rounded-lg bg-gradient-to-tr from-accent-teal to-accent-indigo flex items-center justify-center font-bold text-white shadow-md shadow-accent-teal/20"
+                    >
                         KK
-                    </div>
+                    </motion.div>
                     <div>
                         <h1 className="font-bold text-base bg-gradient-to-r from-accent-teal to-accent-indigo bg-clip-text text-transparent">Kas Kelas</h1>
                         <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase">Management</span>
                     </div>
                 </div>
 
-                {/* Nav Links */}
-                <nav className="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
+                {/* Nav Links — Staggered animation + active indicator */}
+                <motion.nav 
+                    variants={navContainerVariants}
+                    initial="hidden"
+                    animate="show"
+                    className="flex-1 py-6 px-4 space-y-1 overflow-y-auto"
+                >
                     {navItems.map((item, index) => {
                         const Icon = item.icon;
                         return (
-                            <Link
-                                key={index}
-                                href={item.href}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 group ${
-                                    item.active 
-                                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100/80 shadow-sm shadow-emerald-100/10' 
-                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
-                                }`}
-                            >
-                                <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${item.active ? 'text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
-                                {item.name}
-                            </Link>
+                            <motion.div key={index} variants={navItemVariants}>
+                                <Link
+                                    href={item.href}
+                                    className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 group ${
+                                        item.active 
+                                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-100/80 shadow-sm shadow-emerald-100/10' 
+                                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
+                                    }`}
+                                >
+                                    {/* Active indicator bar */}
+                                    {item.active && (
+                                        <motion.div
+                                            layoutId="activeNavIndicator"
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-emerald-500"
+                                            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                                        />
+                                    )}
+                                    <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${item.active ? 'text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
+                                    {item.name}
+                                </Link>
+                            </motion.div>
                         );
                     })}
-                </nav>
+                </motion.nav>
 
-                {/* Footer User Info */}
+                {/* Footer User Info — with avatar pulse ring */}
                 <div className="p-4 border-t border-dark-border/40 bg-dark-surface/20">
                     <div className="flex items-center gap-3 px-2">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white uppercase text-sm border-2 border-dark-border shadow-sm">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white uppercase text-sm border-2 border-dark-border shadow-sm animate-ring-pulse">
                             {auth.user.name.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -148,27 +216,37 @@ export default function AppLayout({ children, header }) {
                                     </div>
                                     <h1 className="font-bold text-base text-gray-200">Kas Kelas</h1>
                                 </div>
-                                <button onClick={() => setSidebarOpen(false)} className="text-gray-400 hover:text-white">
+                                <motion.button 
+                                    whileTap={{ rotate: 90 }}
+                                    onClick={() => setSidebarOpen(false)} 
+                                    className="text-gray-400 hover:text-white"
+                                >
                                     <X className="w-5 h-5" />
-                                </button>
+                                </motion.button>
                             </div>
                             <nav className="flex-1 py-6 px-4 space-y-1">
                                 {navItems.map((item, index) => {
                                     const Icon = item.icon;
                                     return (
-                                        <Link
+                                        <motion.div
                                             key={index}
-                                            href={item.href}
-                                            onClick={() => setSidebarOpen(false)}
-                                            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                                                item.active 
-                                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
-                                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
-                                            }`}
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: index * 0.05, type: 'spring', stiffness: 120 }}
                                         >
-                                            <Icon className="w-5 h-5" />
-                                            {item.name}
-                                        </Link>
+                                            <Link
+                                                href={item.href}
+                                                onClick={() => setSidebarOpen(false)}
+                                                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                                                    item.active 
+                                                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
+                                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
+                                                }`}
+                                            >
+                                                <Icon className="w-5 h-5" />
+                                                {item.name}
+                                            </Link>
+                                        </motion.div>
                                     );
                                 })}
                             </nav>
@@ -193,16 +271,22 @@ export default function AppLayout({ children, header }) {
                 {/* Header/Topbar */}
                 <header className="h-16 bg-dark-card/50 backdrop-blur-md border-b border-dark-border/60 flex items-center justify-between px-4 sm:px-8 z-30 sticky top-0">
                     <div className="flex items-center gap-4">
-                        <button
+                        <motion.button
+                            whileTap={{ scale: 0.9 }}
                             onClick={() => setSidebarOpen(true)}
                             className="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-dark-surface/50"
                         >
                             <Menu className="w-5 h-5" />
-                        </button>
+                        </motion.button>
                         {header && (
-                            <div className="font-semibold text-lg sm:text-xl text-gray-100">
+                            <motion.div
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.3, delay: 0.1 }}
+                                className="font-semibold text-lg sm:text-xl text-gray-100"
+                            >
                                 {header}
-                            </div>
+                            </motion.div>
                         )}
                     </div>
 
@@ -219,7 +303,12 @@ export default function AppLayout({ children, header }) {
                                     {auth.user.name.charAt(0)}
                                 </div>
                                 <span className="text-sm font-medium hidden sm:inline-block max-w-[120px] truncate">{auth.user.name}</span>
-                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                                <motion.div
+                                    animate={{ rotate: userDropdownOpen ? 180 : 0 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <ChevronDown className="w-4 h-4" />
+                                </motion.div>
                             </button>
 
                             <AnimatePresence>
@@ -228,7 +317,7 @@ export default function AppLayout({ children, header }) {
                                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        transition={{ duration: 0.15 }}
+                                        transition={{ duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
                                         className="absolute right-0 mt-2 w-48 rounded-xl bg-dark-card border border-dark-border shadow-xl py-1 z-50 overflow-hidden"
                                     >
                                         <div className="px-4 py-2 border-b border-dark-border/40 bg-dark-surface/20">
@@ -237,18 +326,18 @@ export default function AppLayout({ children, header }) {
                                         </div>
                                         <Link
                                             href="/profile"
-                                            className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:bg-dark-surface hover:text-white transition-all"
+                                            className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:bg-dark-surface hover:text-white transition-all group"
                                         >
-                                            <User className="w-4 h-4 text-gray-400" />
+                                            <User className="w-4 h-4 text-gray-400 group-hover:scale-110 transition-transform" />
                                             Profil Saya
                                         </Link>
                                         <Link
                                             href="/logout"
                                             method="post"
                                             as="button"
-                                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-all text-left font-semibold"
+                                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-all text-left font-semibold group"
                                         >
-                                            <LogOut className="w-4 h-4 text-rose-500" />
+                                            <LogOut className="w-4 h-4 text-rose-500 group-hover:translate-x-0.5 transition-transform" />
                                             Keluar Sesi
                                         </Link>
                                     </motion.div>
@@ -258,9 +347,16 @@ export default function AppLayout({ children, header }) {
                     </div>
                 </header>
 
-                {/* Main Content View */}
+                {/* Main Content View — with page transition */}
                 <main className="flex-1 p-4 sm:p-8">
-                    {children}
+                    <motion.div
+                        key={currentRoute}
+                        variants={pageVariants}
+                        initial="initial"
+                        animate="animate"
+                    >
+                        {children}
+                    </motion.div>
                 </main>
             </div>
         </div>

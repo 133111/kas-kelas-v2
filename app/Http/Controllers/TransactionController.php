@@ -34,7 +34,7 @@ class TransactionController extends Controller
                     'amount' => $tx->amount,
                     'description' => $tx->description,
                     'category' => $tx->category,
-                    'transaction_date' => $tx->transaction_date->format('d M Y'),
+                    'date' => $tx->transaction_date->format('d M Y'),
                     'created_at' => $tx->created_at->format('d M Y H:i'),
                 ];
             });

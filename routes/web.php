@@ -36,10 +36,6 @@ Route::middleware('auth')->group(function () {
     // Reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
 
-    // Simulator Mobile Screen
-    Route::get('/simulator', function () {
-        return Inertia::render('Simulator');
-    })->name('simulator');
 });
 
 Route::middleware('auth')->group(function () {

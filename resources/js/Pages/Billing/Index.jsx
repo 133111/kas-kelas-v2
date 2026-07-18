@@ -3,21 +3,21 @@ import AppLayout from '@/Layouts/AppLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-    Plus, 
+    PlusCircle, 
     Calendar, 
-    User, 
+    Users, 
+    Coins, 
+    ChevronRight, 
     Trash2, 
-    ChevronRight,
-    Users,
-    DollarSign,
-    FileText,
-    AlertCircle,
-    X
+    AlertTriangle,
+    X,
+    CheckCircle2
 } from 'lucide-react';
 
 export default function Index({ sessions }) {
-    const [deletingId, setDeletingId] = useState(null);
-    const { delete: destroy } = useForm();
+    const { delete: destroy, processing } = useForm();
+    const [confirmingSessionDeletion, setConfirmingSessionDeletion] = useState(false);
+    const [sessionToDelete, setSessionToDelete] = useState(null);
 
     const formatIDR = (value) => {
         return new Intl.NumberFormat('id-ID', {
@@ -27,15 +27,23 @@ export default function Index({ sessions }) {
         }).format(value);
     };
 
-    const handleDelete = (id) => {
-        setDeletingId(id);
+    const confirmSessionDeletion = (session) => {
+        setSessionToDelete(session);
+        setConfirmingSessionDeletion(true);
     };
 
-    const confirmDelete = () => {
-        if (!deletingId) return;
-        destroy(`/billing/${deletingId}`, {
-            onSuccess: () => setDeletingId(null),
-            onError: () => setDeletingId(null),
+    const closeModal = () => {
+        setConfirmingSessionDeletion(false);
+        setTimeout(() => setSessionToDelete(null), 300);
+    };
+
+    const deleteSession = (e) => {
+        e.preventDefault();
+        if (!sessionToDelete) return;
+
+        destroy(`/billing/${sessionToDelete.id}`, {
+            preserveScroll: true,
+            onSuccess: () => closeModal(),
         });
     };
 
@@ -43,201 +51,226 @@ export default function Index({ sessions }) {
         hidden: { opacity: 0 },
         show: {
             opacity: 1,
-            transition: { staggerChildren: 0.08 }
+            transition: { staggerChildren: 0.1 }
         }
     };
 
-    const cardVariants = {
+    const itemVariants = {
         hidden: { y: 20, opacity: 0 },
-        show: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100 } }
+        show: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100, damping: 15 } }
     };
 
     return (
-        <AppLayout header="Daftar Sesi Penagihan Kas">
-            <Head title="Penagihan Kas" />
+        <AppLayout header="Manajemen Sesi Penagihan Kas">
+            <Head title="Sesi Penagihan Kas" />
 
-            <div className="space-y-6">
-                {/* Header Action */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="space-y-6"
+            >
+                {/* Header Actions */}
+                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-dark-card border border-dark-border/60 p-4 rounded-xl">
                     <div>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Kelola Sesi</p>
-                        <h2 className="text-xl font-bold text-gray-200">Semua Riwayat Penagihan</h2>
+                        <h3 className="text-sm font-bold text-gray-200">Daftar Sesi Penagihan</h3>
+                        <p className="text-xs text-gray-500">Kelola penagihan kas mingguan atau harian</p>
                     </div>
                     <Link
                         href="/billing/create"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-accent-teal to-teal-500 hover:from-teal-400 hover:to-teal-600 text-dark-bg font-extrabold text-sm shadow-md shadow-accent-teal/10 hover:shadow-accent-teal/20 transition-all active:scale-95 shrink-0"
+                        className="btn-ripple inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-accent-teal to-teal-500 hover:from-teal-400 hover:to-teal-600 text-dark-bg font-extrabold text-xs shadow-md shadow-accent-teal/15 hover:shadow-accent-teal/30 hover:shadow-lg transition-all active:scale-95 group"
                     >
-                        <Plus className="w-4.5 h-4.5 stroke-[3px]" />
-                        Buat Sesi Baru
+                        <PlusCircle className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+                        Buat Sesi Penagihan Baru
                     </Link>
-                </div>
+                </motion.div>
 
-                {/* Sesi List Grid */}
-                <motion.div 
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="show"
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                    {sessions.length === 0 ? (
-                        <div className="col-span-full p-12 rounded-2xl bg-dark-card border border-dark-border/60 text-center flex flex-col items-center justify-center space-y-4">
-                            <div className="p-4 rounded-full bg-dark-surface border border-dark-border text-gray-500">
-                                <Calendar className="w-8 h-8" />
-                            </div>
-                            <div>
-                                <h3 className="text-base font-bold text-gray-300">Belum Ada Sesi Penagihan</h3>
-                                <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">Klik tombol "Buat Sesi Baru" di atas untuk memulai penagihan pertama kepada 36 siswa aktif.</p>
-                            </div>
-                        </div>
-                    ) : (
-                        sessions.map((session) => {
-                            const percent = session.total_students > 0 
-                                ? Math.round((session.paid_count / session.total_students) * 100) 
-                                : 0;
-
+                {/* Sessions Grid */}
+                {sessions.length === 0 ? (
+                    <motion.div 
+                        variants={itemVariants}
+                        className="bg-dark-card border border-dark-border/60 rounded-2xl py-24 flex flex-col items-center justify-center text-center shadow-xl hover-shimmer"
+                    >
+                        <motion.div 
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                            className="w-16 h-16 rounded-full bg-dark-surface/50 border border-dark-border flex items-center justify-center mb-4"
+                        >
+                            <Calendar className="w-8 h-8 text-gray-500" />
+                        </motion.div>
+                        <h3 className="text-base font-bold text-gray-300">Belum ada sesi penagihan</h3>
+                        <p className="text-sm text-gray-500 mt-2 font-medium max-w-sm">Mulai kumpulkan uang kas kelas dengan membuat sesi penagihan pertama Anda.</p>
+                        <Link
+                            href="/billing/create"
+                            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-dark-surface border border-dark-border text-xs font-bold text-accent-teal hover:bg-teal-500/10 hover:border-teal-500/30 transition-all group"
+                        >
+                            Buat Sesi Sekarang
+                            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </motion.div>
+                ) : (
+                    <motion.div 
+                        variants={containerVariants}
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
+                        {sessions.map((session, index) => {
+                            const isCompleted = session.status === 'completed';
+                            const progressPercentage = (session.paid_count / session.total_students) * 100;
+                            
                             return (
-                                <motion.div
+                                <motion.div 
                                     key={session.id}
-                                    variants={cardVariants}
-                                    whileHover={{ y: -4 }}
-                                    className="rounded-2xl bg-dark-card border border-dark-border/60 p-5 flex flex-col justify-between h-[270px] relative overflow-hidden group shadow-lg transition-all duration-300"
+                                    variants={itemVariants}
+                                    whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300 } }}
+                                    className="bg-dark-card border border-dark-border/60 rounded-2xl p-5 shadow-lg flex flex-col justify-between group hover-shimmer card-hover-lift relative overflow-hidden"
                                 >
-                                    {/* Top Metadata */}
-                                    <div>
-                                        <div className="flex justify-between items-start gap-4">
-                                            <div className="flex items-center gap-2">
-                                                <Calendar className="w-4.5 h-4.5 text-accent-teal" />
-                                                <span className="text-sm font-bold text-gray-200">{session.billing_date_formatted}</span>
-                                            </div>
-                                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                                                session.status === 'open' 
-                                                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
-                                                    : 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
-                                            }`}>
-                                                {session.status === 'open' ? 'Aktif' : 'Selesai'}
-                                            </span>
-                                        </div>
-
-                                        {/* Financial details */}
-                                        <div className="mt-4 space-y-1">
-                                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Terkumpul</p>
-                                            <h3 className="text-xl font-black text-slate-800">{formatIDR(session.total_collected)}</h3>
-                                            <p className="text-[11px] text-gray-500">
-                                                Nominal per siswa: <span className="font-semibold text-gray-400">{formatIDR(session.amount_per_student)}</span>
-                                            </p>
-                                        </div>
-
-                                        {/* Notes description snippet */}
-                                        {session.notes && (
-                                            <div className="mt-3 flex items-start gap-1.5 p-2 rounded-lg bg-dark-surface/40 border border-dark-border/30">
-                                                <FileText className="w-3.5 h-3.5 text-gray-500 shrink-0 mt-0.5" />
-                                                <p className="text-[11px] text-gray-400 line-clamp-2 leading-relaxed">{session.notes}</p>
-                                            </div>
-                                        )}
+                                    {/* Shimmer background overlay */}
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
                                     </div>
 
-                                    {/* Footer stats & actions */}
-                                    <div className="mt-4 pt-4 border-t border-dark-border/40 space-y-3.5">
-                                        {/* Progress bar */}
-                                        <div className="space-y-1.5">
-                                            <div className="flex justify-between items-center text-xs">
-                                                <span className="text-gray-500 flex items-center gap-1">
-                                                    <Users className="w-3.5 h-3.5" />
-                                                    Partisipasi
-                                                </span>
-                                                <span className="font-bold text-gray-300">{session.paid_count} / {session.total_students} ({percent}%)</span>
-                                            </div>
-                                            <div className="w-full h-2 rounded-full bg-dark-surface overflow-hidden">
-                                                <div 
-                                                    className="bg-gradient-to-r from-accent-teal to-emerald-400 h-full rounded-full transition-all duration-500" 
-                                                    style={{ width: `${percent}%` }}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {/* Action buttons */}
-                                        <div className="flex justify-between items-center gap-2 pt-1">
-                                            <div className="flex items-center gap-1.5 text-xs text-gray-500 font-semibold">
-                                                <User className="w-3.5 h-3.5" />
-                                                <span className="max-w-[80px] truncate">{session.created_by}</span>
+                                    <div className="relative z-10">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="space-y-1">
+                                                <div className="flex items-center gap-2">
+                                                    <Calendar className="w-4 h-4 text-gray-500" />
+                                                    <h4 className="font-bold text-gray-200 text-sm group-hover:text-white transition-colors">{session.billing_date}</h4>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 mt-1">
+                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ${
+                                                        isCompleted ? 'bg-gray-500/10 text-gray-400 border border-gray-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                    }`}>
+                                                        {isCompleted ? 'Selesai' : 'Aktif'}
+                                                    </span>
+                                                </div>
                                             </div>
                                             
-                                            <div className="flex items-center gap-2">
-                                                <button
-                                                    onClick={() => handleDelete(session.id)}
-                                                    className="p-2 rounded-xl bg-red-500/10 text-red-400 border border-red-500/10 hover:border-red-500/30 hover:bg-red-500/20 active:scale-95 transition-all"
-                                                    title="Hapus sesi"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                                <Link
-                                                    href={`/billing/${session.id}`}
-                                                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-dark-surface hover:bg-dark-surface/80 border border-dark-border text-xs font-bold text-gray-300 hover:text-white transition-all"
-                                                >
-                                                    Detail
-                                                    <ChevronRight className="w-3.5 h-3.5" />
-                                                </Link>
+                                            <button
+                                                onClick={() => confirmSessionDeletion(session)}
+                                                className="p-2 text-gray-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors group/btn z-20"
+                                                title="Hapus Sesi"
+                                            >
+                                                <Trash2 className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
+                                            </button>
+                                        </div>
+
+                                        <div className="space-y-4 mb-6">
+                                            {/* Progress Bar */}
+                                            <div className="space-y-2">
+                                                <div className="flex justify-between text-xs font-semibold">
+                                                    <span className="text-gray-400">Progress Pembayaran</span>
+                                                    <span className={isCompleted ? 'text-gray-400' : 'text-emerald-400'}>
+                                                        {session.paid_count} / {session.total_students} Siswa
+                                                    </span>
+                                                </div>
+                                                <div className="w-full bg-dark-surface border border-dark-border/40 h-2 rounded-full overflow-hidden relative">
+                                                    <motion.div 
+                                                        initial={{ width: 0 }}
+                                                        whileInView={{ width: `${progressPercentage}%` }}
+                                                        viewport={{ once: true }}
+                                                        transition={{ duration: 1, delay: 0.2 + (index * 0.1), ease: "easeOut" }}
+                                                        className={`h-full rounded-full relative overflow-hidden ${isCompleted ? 'bg-gray-500' : 'bg-gradient-to-r from-emerald-500 to-teal-400'}`}
+                                                    >
+                                                        {/* Shimmer on progress bar */}
+                                                        {!isCompleted && (
+                                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-full animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+                                                        )}
+                                                    </motion.div>
+                                                </div>
+                                            </div>
+
+                                            {/* Stats */}
+                                            <div className="grid grid-cols-2 gap-3 pt-2">
+                                                <div className="p-3 rounded-xl bg-dark-surface/50 border border-dark-border/40 group-hover:bg-dark-surface/80 transition-colors">
+                                                    <span className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                                                        <Coins className="w-3 h-3 text-emerald-400" />
+                                                        Terkumpul
+                                                    </span>
+                                                    <p className="text-sm font-black text-emerald-400">{formatIDR(session.total_collected)}</p>
+                                                </div>
+                                                <div className="p-3 rounded-xl bg-dark-surface/50 border border-dark-border/40 group-hover:bg-dark-surface/80 transition-colors">
+                                                    <span className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                                                        <Users className="w-3 h-3 text-rose-400" />
+                                                        Absen / Alpha
+                                                    </span>
+                                                    <p className="text-sm font-black text-rose-400">{session.total_students - session.paid_count} Siswa</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <Link
+                                        href={`/billing/${session.id}`}
+                                        className="relative z-10 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-dark-surface hover:bg-dark-surface/80 border border-dark-border hover:border-dark-border/80 text-xs font-bold text-gray-300 hover:text-white transition-all group/link"
+                                    >
+                                        Kelola Penagihan
+                                        <ChevronRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                                    </Link>
                                 </motion.div>
                             );
-                        })
-                    )}
-                </motion.div>
-            </div>
+                        })}
+                    </motion.div>
+                )}
+            </motion.div>
 
-            {/* Delete Confirmation Modal */}
+            {/* Modal Konfirmasi Hapus Sesi — Animated */}
             <AnimatePresence>
-                {deletingId && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        {/* Backdrop */}
+                {confirmingSessionDeletion && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 pt-4 pb-20 text-center sm:p-0">
                         <motion.div
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: 0.6 }}
+                            animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            onClick={() => setDeletingId(null)}
-                            className="absolute inset-0 bg-black"
+                            transition={{ duration: 0.2 }}
+                            className="fixed inset-0 transition-opacity bg-black/60 backdrop-blur-sm"
+                            onClick={closeModal}
                         />
-                        
-                        {/* Modal Box */}
+
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-md bg-dark-card border border-dark-border/80 rounded-2xl p-6 shadow-2xl z-10"
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-dark-card border border-dark-border shadow-2xl rounded-2xl relative z-50"
                         >
-                            <button
-                                onClick={() => setDeletingId(null)}
-                                className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-
-                            <div className="flex items-start gap-4">
-                                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 shrink-0">
-                                    <AlertCircle className="w-6 h-6" />
+                            <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-3 rounded-full bg-rose-500/10 text-rose-500">
+                                        <AlertTriangle className="w-6 h-6 animate-pulse" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-100">
+                                            Hapus Sesi Penagihan
+                                        </h3>
+                                        <p className="text-sm text-gray-400 mt-1">
+                                            Tanggal: {sessionToDelete?.billing_date}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-lg font-bold text-gray-200">Konfirmasi Hapus Sesi</h3>
-                                    <p className="text-xs text-gray-400 leading-relaxed">
-                                        Apakah Anda yakin ingin menghapus sesi penagihan ini? Aksi ini akan menghapus semua record pembayaran dan pembukuan uang kas terkait sesi ini secara permanen.
-                                    </p>
-                                </div>
+                                <button onClick={closeModal} className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-dark-surface/50 transition-colors">
+                                    <X className="w-5 h-5" />
+                                </button>
                             </div>
 
-                            <div className="mt-6 flex justify-end gap-3 text-sm">
+                            <div className="mt-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm font-medium leading-relaxed">
+                                Apakah Anda yakin ingin menghapus sesi penagihan ini? Semua data pembayaran pada sesi ini akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+                            </div>
+
+                            <div className="mt-6 flex flex-col sm:flex-row justify-end gap-3">
                                 <button
-                                    onClick={() => setDeletingId(null)}
-                                    className="px-4 py-2 rounded-xl bg-dark-surface hover:bg-dark-surface/80 border border-dark-border text-gray-400 hover:text-white font-semibold transition-all"
+                                    type="button"
+                                    onClick={closeModal}
+                                    className="px-5 py-2.5 bg-dark-surface hover:bg-dark-surface/80 border border-dark-border text-gray-300 font-bold text-sm rounded-xl transition-colors active:scale-95"
                                 >
                                     Batal
                                 </button>
                                 <button
-                                    onClick={confirmDelete}
-                                    className="px-4 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold shadow-md shadow-red-500/10 transition-all active:scale-95"
+                                    type="button"
+                                    onClick={deleteSession}
+                                    disabled={processing}
+                                    className="btn-ripple inline-flex justify-center items-center px-5 py-2.5 bg-rose-500 hover:bg-rose-600 border border-transparent text-white font-bold text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all disabled:opacity-50 disabled:scale-100 active:scale-95"
                                 >
-                                    Ya, Hapus Sesi
+                                    {processing ? 'Menghapus...' : 'Ya, Hapus Sesi'}
                                 </button>
                             </div>
                         </motion.div>

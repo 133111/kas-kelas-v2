@@ -2,24 +2,351 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom premium scrollbar for bright theme */
+/* ============================================
+   KAS KELAS — PREMIUM ANIMATION SYSTEM
+   All animations are GPU-accelerated (transform/opacity only)
+   ============================================ */
+
+/* --- Respect reduced motion preferences --- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   KEYFRAME DEFINITIONS
+   ============================================ */
+
+/* Floating orb / decorative element animation */
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-12px) rotate(1deg); }
+    50% { transform: translateY(-6px) rotate(-1deg); }
+    75% { transform: translateY(-18px) rotate(0.5deg); }
+}
+
+@keyframes float-reverse {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(14px) rotate(-1deg); }
+    50% { transform: translateY(6px) rotate(1deg); }
+    75% { transform: translateY(20px) rotate(-0.5deg); }
+}
+
+/* Shimmer / shine sweep effect on borders and surfaces */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Pulsing glow for stat cards and indicators */
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+    50% { box-shadow: 0 0 20px 4px rgba(13, 148, 136, 0.12); }
+}
+
+@keyframes pulse-glow-rose {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+    50% { box-shadow: 0 0 20px 4px rgba(244, 63, 94, 0.12); }
+}
+
+@keyframes pulse-glow-indigo {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+    50% { box-shadow: 0 0 20px 4px rgba(79, 70, 229, 0.12); }
+}
+
+@keyframes pulse-glow-amber {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    50% { box-shadow: 0 0 20px 4px rgba(245, 158, 11, 0.12); }
+}
+
+/* Gradient background shift */
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Slide up with fade — for entrance animations */
+@keyframes slide-up-fade {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Scale in — for modals and popovers */
+@keyframes scale-in {
+    0% { opacity: 0; transform: scale(0.92); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Ripple effect for button clicks */
+@keyframes ripple {
+    0% { transform: scale(0); opacity: 0.5; }
+    100% { transform: scale(4); opacity: 0; }
+}
+
+/* Slow spin for decorative elements */
+@keyframes spin-slow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Bounce subtle — for icons */
+@keyframes bounce-subtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* Gradient text animation */
+@keyframes gradient-text-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Progress bar fill */
+@keyframes progress-fill {
+    0% { width: 0%; }
+}
+
+/* Subtle shake for attention */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
+
+/* Avatar ring pulse */
+@keyframes ring-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(13, 148, 136, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+}
+
+/* Dot pulse for loading states */
+@keyframes dot-pulse {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+    animation: float-reverse 7s ease-in-out infinite;
+}
+
+.animate-float-slow {
+    animation: float 10s ease-in-out infinite;
+}
+
+.animate-float-fast {
+    animation: float 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow-rose {
+    animation: pulse-glow-rose 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow-indigo {
+    animation: pulse-glow-indigo 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow-amber {
+    animation: pulse-glow-amber 3s ease-in-out infinite;
+}
+
+.animate-gradient-shift {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+}
+
+.animate-slide-up {
+    animation: slide-up-fade 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+    animation: scale-in 0.3s ease-out forwards;
+}
+
+.animate-spin-slow {
+    animation: spin-slow 12s linear infinite;
+}
+
+.animate-bounce-subtle {
+    animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+.animate-gradient-text {
+    background-size: 200% 200%;
+    animation: gradient-text-flow 4s ease infinite;
+}
+
+.animate-ring-pulse {
+    animation: ring-pulse 2s ease-out infinite;
+}
+
+.animate-progress-fill {
+    animation: progress-fill 1s ease-out forwards;
+}
+
+/* Stagger delay utilities */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-700 { animation-delay: 700ms; }
+.delay-1000 { animation-delay: 1000ms; }
+
+/* ============================================
+   INTERACTIVE EFFECTS
+   ============================================ */
+
+/* Ripple button effect container */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-ripple::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+    transform: scale(0);
+    opacity: 0;
+    transition: none;
+}
+
+.btn-ripple:active::after {
+    animation: ripple 0.6s ease-out;
+}
+
+/* Hover shimmer border effect */
+.hover-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.hover-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(90deg, transparent, rgba(13, 148, 136, 0.15), transparent);
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hover-shimmer:hover::before {
+    opacity: 1;
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Card tilt 3D effect (CSS-only, subtle) */
+.card-hover-lift {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.card-hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.08);
+}
+
+/* Glow border on hover */
+.hover-glow-teal {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.hover-glow-teal:hover {
+    box-shadow: 0 0 20px -4px rgba(13, 148, 136, 0.2);
+    border-color: rgba(13, 148, 136, 0.3);
+}
+
+/* Animated underline for links */
+.link-underline {
+    position: relative;
+}
+
+.link-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #0d9488, #4f46e5);
+    border-radius: 9999px;
+    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.link-underline:hover::after {
+    width: 100%;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: transparent;
 }
 ::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 9999px;
+    transition: background 0.2s;
 }
 ::-webkit-scrollbar-thumb:hover {
     background: #0d9488;
 }
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* ============================================
+   BODY & GLOBAL
+   ============================================ */
 
 body {
     background-color: #f8fafc;
     color: #1e293b;
 }
 
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Selection styling */
+::selection {
+    background-color: rgba(13, 148, 136, 0.15);
+    color: inherit;
+}
