@@ -16,17 +16,17 @@ export default function Login({ status }) {
     const submit = (e) => {
         e.preventDefault();
         
-        // Brief local success animation before redirect
-        setIsSuccess(true);
-        setTimeout(() => {
-            post(route('login'), {
-                onFinish: () => {
-                    reset('password');
-                    setIsSuccess(false);
-                },
-                onError: () => setIsSuccess(false)
-            });
-        }, 500); // Allow animation to play
+        post(route('login'), {
+            onSuccess: () => {
+                setIsSuccess(true);
+            },
+            onFinish: () => {
+                reset('password');
+            },
+            onError: () => {
+                setIsSuccess(false);
+            }
+        });
     };
 
     const containerVariants = {
@@ -129,9 +129,9 @@ export default function Login({ status }) {
                         </span>
                     </label>
 
-                    <Link href="/register" className="text-xs font-bold text-accent-teal hover:text-teal-400 transition-colors">
-                        Belum punya akun?
-                    </Link>
+                    <span className="text-xs font-semibold text-gray-500">
+                        Khusus Pengurus Kelas
+                    </span>
                 </motion.div>
 
                 {/* Submit button */}

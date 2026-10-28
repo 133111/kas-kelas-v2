@@ -132,20 +132,12 @@ export default function Welcome({ auth }) {
                                 <ArrowRight className="w-3.5 h-3.5" />
                             </Link>
                         ) : (
-                            <>
                                 <Link
                                     href="/login"
-                                    className="text-xs font-bold text-gray-400 hover:text-white transition-colors link-underline"
+                                    className="btn-ripple inline-flex items-center gap-1.5 px-4.5 py-2 rounded-xl bg-gradient-to-r from-accent-teal to-teal-500 hover:from-teal-400 hover:to-teal-600 text-dark-bg font-extrabold text-xs shadow-md shadow-accent-teal/10 hover:shadow-accent-teal/30 transition-all active:scale-95"
                                 >
                                     Masuk Akun
                                 </Link>
-                                <Link
-                                    href="/register"
-                                    className="btn-ripple inline-flex items-center gap-1.5 px-4.5 py-2 rounded-xl bg-gradient-to-r from-accent-teal to-teal-500 hover:from-teal-400 hover:to-teal-600 text-dark-bg font-extrabold text-xs shadow-md shadow-accent-teal/10 hover:shadow-accent-teal/30 transition-all active:scale-95"
-                                >
-                                    Daftar Wali Kelas
-                                </Link>
-                            </>
                         )}
                     </div>
                 </motion.header>
@@ -200,14 +192,8 @@ export default function Welcome({ auth }) {
                                         href="/login"
                                         className="btn-ripple group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-accent-teal to-teal-500 hover:from-teal-400 hover:to-teal-600 text-dark-bg font-extrabold text-sm shadow-md shadow-accent-teal/15 hover:shadow-accent-teal/30 hover:shadow-lg transition-all active:scale-95"
                                     >
-                                        Mulai Sekarang
+                                        Masuk Akun
                                         <ArrowRight className="w-4 h-4 stroke-[3px] group-hover:translate-x-1 transition-transform" />
-                                    </Link>
-                                    <Link
-                                        href="/register"
-                                        className="btn-ripple w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-dark-surface hover:bg-dark-surface/80 border border-dark-border hover:border-dark-border/80 text-sm font-bold text-gray-300 hover:text-white transition-all active:scale-95 hover:shadow-lg"
-                                    >
-                                        Registrasi Akun Baru
                                     </Link>
                                 </>
                             )}
