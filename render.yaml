@@ -1,0 +1,69 @@
+# =============================================================
+# Render Blueprint – kas-kelas (Laravel 11 + React/Inertia)
+# =============================================================
+# Docs: https://docs.render.com/blueprint-spec
+#
+# Usage:
+#   1. Push this file to your repo root.
+#   2. Go to https://dashboard.render.com → "Blueprints" → "New Blueprint Instance".
+#   3. Connect your repo — Render will auto-detect this file.
+#   4. Set the APP_KEY env var manually via the Render dashboard:
+#        php artisan key:generate --show
+#      Copy the output and paste it as the APP_KEY value.
+# =============================================================
+
+databases:
+  - name: kas-kelas-db
+    plan: free            # free tier PostgreSQL
+    databaseName: kas_kelas
+    user: kas_kelas_user
+
+services:
+  - type: web
+    name: kas-kelas
+    runtime: docker
+    plan: free            # free tier web service
+    dockerfilePath: ./Dockerfile
+    envVars:
+      # ── Laravel Core ──────────────────────────────────────
+      - key: APP_NAME
+        value: "Kas Kelas"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        fromService:
+          type: web
+          name: kas-kelas
+          property: host
+      # ⚠  Set APP_KEY manually in the Render dashboard:
+      #    Run `php artisan key:generate --show` locally,
+      #    then paste the result (base64:xxx...) as the value.
+      - key: APP_KEY
+        sync: false       # must be set manually
+
+      # ── Database (auto-linked from the database above) ────
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kas-kelas-db
+          property: connectionString
+
+      # ── Logging ────────────────────────────────────────────
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: error
+
+      # ── Session / Cache ────────────────────────────────────
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: CACHE_STORE
+        value: file
+
+    # Run migrations automatically on every deploy
+    buildCommand: ""
+    startCommand: |
+      php artisan migrate --force && apache2-foreground
